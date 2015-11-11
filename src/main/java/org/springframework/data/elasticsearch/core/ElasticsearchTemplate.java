@@ -947,9 +947,11 @@ public class ElasticsearchTemplate implements ElasticsearchOperations, Applicati
 				if (isDocument(query.getObject().getClass())) {
 					entityId = getPersistentEntityId(query.getObject());
 				}
-				// If we have a query id and a document id, do not ask ES to generate one.
-				if (query.getId() != null && entityId != null) {
+				// If we have a query id OR a document id, do not ask ES to generate one.
+				if (query.getId() != null) {
 					indexRequestBuilder = client.prepareIndex(indexName, type, query.getId());
+				} else if (entityId != null) {
+					indexRequestBuilder = client.prepareIndex(indexName, type, entityId);
 				} else {
 					indexRequestBuilder = client.prepareIndex(indexName, type);
 				}
